@@ -1,16 +1,33 @@
 <body class="bg-slate-900 text-slate-200 pt-12 px-4 min-h-screen">
-
 <main class="max-w-xl mx-auto bg-slate-800 rounded-2xl shadow-lg p-6 sm:p-8 ">
 
-  <h1 class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-    {{title}}
+  <h1
+    class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+    Todo App
   </h1>
+
   <h2 class="text-lg text-slate-400 text-center mb-8">What would u like today?</h2>
-  <div class="buttons">
-    <button (click)="setFilter('all')">All</button>
-    <button (click)="setFilter('active')">Active</button>
-    <button (click)="setFilter('completed')">Completed</button>
+
+  <div class="flex justify-between items-center mb-4">
+    <div class="buttons">
+      <button
+        (click)="setFilter('all')"
+        [class.active]="currentFilter() === 'all'">
+        All ({{ totalCount }})
+      </button>
+      <button
+        (click)="setFilter('active')"
+        [class.active]="currentFilter() === 'active'">
+        Active ({{ activeCount }})
+      </button>
+      <button
+        (click)="setFilter('completed')"
+        [class.active]="currentFilter() === 'completed'">
+        Completed ({{ completedCount }})
+      </button>
+    </div>
   </div>
+
   <section class="todo-container">
     <form (submit)="$event.preventDefault()" class="flex gap-3 mb-8">
       <label for="addItemValue" class="sr-only">Add a new task</label>
@@ -31,7 +48,7 @@
     </form>
 
     <ul class="flex flex-col gap-3">
-      @for(item of items; track item.id){
+      @for (item of items; track item.id) {
         <app-todo
           [item]="item"
           (deleteTaskEvent)="deleteTask($event)"

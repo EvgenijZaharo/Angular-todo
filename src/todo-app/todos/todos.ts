@@ -1,15 +1,15 @@
-import {Component,  input, output, } from '@angular/core';
-import { TodoItem } from '../../interfaces';
+import {Component, input, output,} from '@angular/core';
+import {TodoItem} from '../interfaces';
 
 @Component({
   selector: 'app-todo',
-  templateUrl: './todo.html',
-  styleUrls: ['./todo.css']
+  templateUrl: './todos.html',
+  styleUrls: ['./todos.css']
 })
-export class TodoComponent {
-  item = input.required<TodoItem>();
-  deleteTaskEvent = output<number>();
-  toggleCompletionEvent = output<number>();
+export class Todos {
+  readonly item = input.required<TodoItem>();
+  readonly deleteTaskEvent = output<number>();
+  readonly toggleCompletionEvent = output<number>();
 
   deleteTask(id: number): void {
     this.deleteTaskEvent.emit(id);
