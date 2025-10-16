@@ -1,0 +1,29 @@
+<div class="todo flex items-center bg-slate-900/50 p-3 rounded-lg transition-all hover:bg-slate-700/70 group">
+  <li class="flex-grow flex items-center min-w-0">
+    <input
+      (change)="toggleCompletion(id)"
+      type="checkbox"
+      name=""
+      [id]="id"
+      [checked]="completed"
+      class="round-checkbox"
+    >
+    <p
+      class="ml-4 flex-1 transition-colors truncate"
+      [class.completed]="completed"
+    >
+      {{description}}
+    </p>
+  </li>
+  <div class="flex">
+    <open-modal [id]="id" [description]="description" (save)="editTaskEvent.emit($event)" />
+    <button
+      type="button"
+      (click)="deleteTask(id)"
+      class="text-slate-500 ml-auto opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500"
+    >
+      <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete" />
+    </button>
+  </div>
+</div>
+
