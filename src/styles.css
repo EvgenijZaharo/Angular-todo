@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+html, body { height: 100%;
+background-color: #0f172b;
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.tw-modal-backdrop {
+  @apply bg-black/60;
+}
+
+.tw-modal-panel .mdc-dialog__container,
+.tw-modal-panel .mdc-dialog__surface {
+  @apply bg-slate-800 text-slate-200 rounded-2xl shadow-2xl;
+}
+
+.tw-modal-panel [mat-dialog-title],
+.tw-modal-panel .mdc-dialog__title {
+  @apply text-xl font-semibold text-slate-100 px-5 pt-5;
+}
+
+.tw-modal-panel [mat-dialog-content],
+.tw-modal-panel mat-dialog-content {
+  @apply px-5 pb-0;
+}
+
+.tw-modal-panel [mat-dialog-actions],
+.tw-modal-panel mat-dialog-actions {
+  @apply px-5 pb-5 pt-4 flex justify-end gap-2;
+}
+
