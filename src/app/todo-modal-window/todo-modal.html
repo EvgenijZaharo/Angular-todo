@@ -2,21 +2,21 @@
 <mat-dialog-content>
   <label for="desc" class="block text-sm mb-2 text-slate-300">Description</label>
   <input id="desc"
-         [value]="description()"
-         (input)="description.set($any($event.target).value)"
-         [attr.maxlength]="maxLength"
+         [formControl]="descriptionCtrl"
+         [attr.maxlength]="_maxLength"
          aria-describedby="descHelp errorText"
          class="w-full bg-slate-700 text-slate-100 placeholder:text-slate-400 px-4 py-2 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
   />
-  <div id="descHelp" class="mt-2 text-xs text-slate-400">Max {{ maxLength }} characters</div>
-  @if (!isValid(description().trim())) {
+  <div id="descHelp" class="mt-2 text-xs text-slate-400">Max {{ _maxLength }} characters</div>
+  @if (descriptionCtrl.touched && descriptionCtrl.invalid) {
   <div id="errorText" role="alert" class="mt-2 text-sm text-red-400">
-    Description is required and must be ≤ {{ maxLength }} characters.
+    @if (descriptionCtrl.hasError('required')) { Description is required. }
+    @if (descriptionCtrl.hasError('maxlength')) { Max {{ _maxLength }} characters. }
   </div>
   }
-  <div class="mt-2 text-xs text-slate-400">Characters: {{ description().trim().length }} / {{ maxLength }}</div>
+  <div class="mt-2 text-xs text-slate-400">Characters: {{ descriptionCtrl.value.trim().length }} / {{ _maxLength }}</div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="close()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-lg hover:bg-slate-600 transition-colors">Cancel</button>
-  <button mat-button color="primary" (click)="save()" [disabled]="!isValid(description().trim())" class="bg-blue-600 disabled:bg-blue-900/30 disabled:text-slate-400 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">Save</button>
+  <button mat-button color="primary" (click)="save()" [disabled]="descriptionCtrl.invalid || !descriptionCtrl.value.trim().length" class="bg-blue-600 disabled:bg-blue-900/30 disabled:text-slate-400 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">Save</button>
 </mat-dialog-actions>

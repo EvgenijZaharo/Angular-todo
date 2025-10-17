@@ -1,7 +1,8 @@
-import {Component, input, output,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 import {TodoItem} from '../interfaces';
 import {MatIcon} from '@angular/material/icon';
 import {OpenModal} from '../todo-modal-window/open-modal/open-modal';
+
 
 @Component({
   selector: 'app-todo',
@@ -10,7 +11,8 @@ import {OpenModal} from '../todo-modal-window/open-modal/open-modal';
     MatIcon,
     OpenModal
   ],
-  styleUrls: ['./todos.css']
+  styleUrls: ['./todos.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Todos {
   readonly item = input.required<TodoItem>();

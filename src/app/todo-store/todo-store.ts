@@ -51,14 +51,12 @@ export class TodoStore {
   }
 
   addTask(task: string): void {
-    if (task.trim().length > 0) {
       const newTodo: TodoItem = {
         id: Date.now(),
         description: task,
         completed: false
       }
       this._todos.update(curTodos => [...curTodos, newTodo]);
-    }
   }
 
   toggleCompletion(id: number): void {
