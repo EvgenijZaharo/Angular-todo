@@ -40,15 +40,11 @@ export class Todos {
   private checkboxChangeEffect = effect(() => {
     const value = this.checkboxValue();
     if (value !== undefined && value !== this.completed()) {
-      this.toggleCompletion(this.id());
+      this.toggleCompletionEvent.emit(this.id());
     }
   });
 
   protected deleteTask(id: number): void {
     this.deleteTaskEvent.emit(id);
-  }
-
-  private toggleCompletion(id: number): void {
-    this.toggleCompletionEvent.emit(id);
   }
 }
