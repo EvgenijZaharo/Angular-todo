@@ -1,82 +1,95 @@
-<body class="bg-slate-900 text-slate-200 pt-12 px-4">
-<main class="max-w-xl mx-auto bg-slate-800 rounded-2xl shadow-lg p-6 sm:p-8">
+@defer {
+  <body class="bg-slate-900 text-slate-200 pt-12 px-4">
+  <main class="max-w-xl mx-auto bg-slate-800 rounded-2xl shadow-lg p-6 sm:p-8">
 
-  <h1
-    class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-    Todo App
-  </h1>
+    <h1
+      class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+      Todo App
+    </h1>
 
-  <h2 class="text-lg text-slate-400 text-center mb-8">What would u like today?</h2>
+    <h2 class="text-lg text-slate-400 text-center mb-8">What would u like today?</h2>
 
-  <div class="flex gap-3 mb-4">
-    <button
-      (click)="setFilter('all')"
-    >
-      All ({{ totalCount }})
-    </button>
-    <button
-      (click)="setFilter('active')"
-    >
-      Active ({{ activeCount }})
-    </button>
-    <button
-      (click)="setFilter('completed')"
-    >
-      Completed ({{ completedCount }})
-    </button>
-  </div>
-  <section class="todo-container">
-    <form [formGroup]="todoForm" (ngSubmit)="onSubmit()" class="flex gap-3 mb-8">
-      <label for="addItemValue" class="sr-only">Add a new task</label>
-      <div class="flex-grow">
-        <input
-          id="addItemValue"
-          placeholder="Add a new task..."
-          formControlName="task"
-          class="w-full bg-slate-700 text-slate-200 placeholder:text-slate-500 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 transition-all"
-          (focus)="onTaskFocus()"
-          (blur)="onTaskBlur()"
-          [class.border-transparent]="!isTaskFocused || !task?.dirty"
-          [class.border-red-500]="isTaskFocused && task?.errors && task?.dirty"
-          [class.focus:ring-blue-500]="!isTaskFocused || !task?.errors || !task?.dirty"
-          [class.focus:ring-red-500]="isTaskFocused && task?.errors && task?.dirty"
-        >
-        @if (isTaskFocused && task?.errors && task?.dirty) {
-          <div class="text-red-400 text-sm mt-1 pl-1">
-            @if (task?.hasError('required')) {
-              <span>Task cannot be empty.</span>
-            }
-            @if (task?.hasError('minlength')) {
-              <span>Task must be at least 3 characters long.</span>
-            }
-            @if (task?.hasError('maxlength')) {
-              <span>Task cannot exceed 255 characters.</span>
-            }
-          </div>
-        }
-      </div>
-
+    <div class="flex gap-3 mb-4">
       <button
-        type="submit"
-        [disabled]="todoForm.invalid"
-        class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed"
+        (click)="setFilter(filterState.all)"
       >
-        Add
+        All ({{ totalCount() }})
       </button>
-    </form>
+      <button
+        (click)="setFilter(filterState.active)"
+      >
+        Active ({{ activeCount() }})
+      </button>
+      <button
+        (click)="setFilter(filterState.completed)"
+      >
+        Completed ({{ completedCount() }})
+      </button>
+    </div>
+    <section class="todo-container">
+      <form [formGroup]="todoForm" (ngSubmit)="onSubmit()" class="flex gap-3 mb-8">
+        <label for="addItemValue" class="sr-only">Add a new task</label>
+        <div class="flex-grow">
+          <input
+            id="addItemValue"
+            placeholder="Add a new task..."
+            formControlName="task"
+            class="w-full bg-slate-700 text-slate-200 placeholder:text-slate-500 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 transition-all"
+            (focus)="onTaskFocus()"
+            (blur)="onTaskBlur()"
+            [class.border-transparent]="!isTaskFocused() || !task()?.dirty"
+            [class.border-red-500]="isTaskFocused() && task()?.errors && task()?.dirty"
+            [class.focus:ring-blue-500]="!isTaskFocused() || !task()?.errors || !task()?.dirty"
+            [class.focus:ring-red-500]="isTaskFocused() && task()?.errors && task()?.dirty"
+          >
+          @if (isTaskFocused() && task()?.errors && task()?.dirty) {
+            <div class="text-red-400 text-sm mt-1 pl-1">
+              @if (task()?.hasError('required')) {
+                <span>Task cannot be empty.</span>
+              }
+              @if (task()?.hasError('minlength')) {
+                <span>Task must be at least 3 characters long.</span>
+              }
+              @if (task()?.hasError('maxlength')) {
+                <span>Task cannot exceed 255 characters.</span>
+              }
+            </div>
+          }
+        </div>
 
-    <ul class="flex flex-col gap-3">
-      @for (item of items; track item.id) {
-        <app-todo
-          [item]="item"
-          (deleteTaskEvent)="deleteTask($event)"
-          (toggleCompletionEvent)="toggleCompletion($event)"
-          (editTaskEvent)="editTask($event)"
-        ></app-todo>
+        <button
+          type="submit"
+          [disabled]="todoForm.invalid"
+          class="bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed"
+        >
+          Add
+        </button>
+        <todo-datepicker formControlName="dateControl"></todo-datepicker>
+      </form>
+
+      @for (group of groupedItems(); track group.date) {
+        <div class="mb-6">
+          <h3 class="text-xl font-semibold text-slate-300 mb-3 pb-2 border-b border-slate-600">
+            {{ formatDate(group.date) }}
+          </h3>
+          <ul class="flex flex-col gap-3">
+            @for (item of group.todos; track item.id) {
+              <app-todo
+                [item]="item"
+                (deleteTaskEvent)="deleteTask($event)"
+                (toggleCompletionEvent)="toggleCompletion($event)"
+                (editTaskEvent)="editTask($event)"
+              ></app-todo>
+            }
+          </ul>
+        </div>
       } @empty {
         <p class="text-center text-slate-500 py-4">No tasks here. Add one above!</p>
       }
-    </ul>
-  </section>
-</main>
-</body>
+    </section>
+  </main>
+  </body>
+} @placeholder {
+  <h1 class="text-amber-50">Loading Todos...</h1>
+}
+

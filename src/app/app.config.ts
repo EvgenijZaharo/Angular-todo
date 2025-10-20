@@ -3,7 +3,12 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 
-export const VALIDATION_CONSTANTS = new InjectionToken<any>('VALIDATION_CONSTANTS');
+export interface ValidationConstants {
+  minLength: number;
+  maxLength: number;
+}
+
+export const VALIDATION_CONSTANTS = new InjectionToken<ValidationConstants>('VALIDATION_CONSTANTS');
 
 export const appConfig: ApplicationConfig = {
   providers: [

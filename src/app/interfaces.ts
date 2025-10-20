@@ -4,4 +4,8 @@ export interface TodoItem {
   completed: boolean;
   date: string;
 }
-export type FilterType = "all" | "active" | "completed";
+export enum filterState {
+  all = 'all',
+  active = 'active',
+  completed = 'completed'
+}

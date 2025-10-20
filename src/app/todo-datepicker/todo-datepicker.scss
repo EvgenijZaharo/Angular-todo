@@ -1,0 +1,102 @@
+@use '@angular/material' as mat;
+
+.calendar-container {
+  position: relative;
+}
+
+.date-picker-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #334155;
+  color: #cbd5e1;
+  border: 2px solid transparent;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #475569;
+    border-color: #64748b;
+  }
+
+  &.active {
+    background-color: #2563eb;
+    color: white;
+    border-color: #3b82f6;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  .selected-date-text {
+    white-space: nowrap;
+  }
+}
+
+.demo-inline-calendar-card {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  margin-top: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+}
+
+.mat-calendar {
+  width: 380px;
+}
+
+.mat-calendar-body-cell-content {
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  font-size: 15px;
+}
+
+.mat-calendar-header {
+  padding: 12px 8px;
+}
+
+.mat-calendar-previous-button,
+.mat-calendar-next-button {
+  width: 40px;
+  height: 40px;
+}
+
+.mat-calendar-table-header th {
+  padding: 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.mat-calendar-body-cell {
+  padding: 8px;
+}
+
+
+.mat-calendar-body-selected {
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+}
+
+.mat-calendar-body-cell:hover .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border: 1px solid #007bff;
+}
+
+.mat-calendar-period-button {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+}

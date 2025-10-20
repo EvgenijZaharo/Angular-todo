@@ -1,0 +1,19 @@
+<div class="calendar-container">
+  <button
+    type="button"
+    (click)="onToggle()"
+    class="date-picker-btn"
+    [class.active]="isOpen()"
+  >
+    <span class="selected-date-text">{{ formatSelectedDate() }}</span>
+  </button>
+  @if (isOpen()) {
+    <mat-card class="demo-inline-calendar-card">
+      <mat-calendar
+        [minDate]="minDate"
+        [selected]="selected()"
+        (selectedChange)="onDateSelected($event)">
+      </mat-calendar>
+    </mat-card>
+  }
+</div>

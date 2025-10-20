@@ -1,95 +1,128 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {FilterType, TodoItem} from './interfaces';
-import {CommonModule} from '@angular/common';
+import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {filterState} from './interfaces';
 import {Todos} from './todos/todos';
 import {TodoStore} from './todo-store/todo-store';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {VALIDATION_CONSTANTS} from './app.config';
+import {TodoDatepicker} from './todo-datepicker/todo-datepicker';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, Todos, ReactiveFormsModule],
+  imports: [Todos, ReactiveFormsModule, TodoDatepicker],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  private todoService = inject(TodoStore);
+  private readonly todoService = inject(TodoStore);
+  private readonly validationsConstant = inject(VALIDATION_CONSTANTS);
 
   readonly todos = this.todoService.todos;
-
-  private _validationsConstant = inject(VALIDATION_CONSTANTS);
+  readonly filterState = filterState;
 
   todoForm = new FormGroup({
-    task: new FormControl('', {
-      validators: [Validators.required, Validators.minLength(this._validationsConstant.minLength), Validators.maxLength(this._validationsConstant.maxLength)],
+    task: new FormControl<string>('', {
+      validators: [
+        Validators.required,
+        Validators.minLength(this.validationsConstant.minLength),
+        Validators.maxLength(this.validationsConstant.maxLength)
+      ],
       nonNullable: true
     }),
+    dateControl: new FormControl<Date>(new Date(), {
+      nonNullable: true
+    })
   });
 
-  // Tracks whether the task input currently has focus
-  isTaskFocused = false;
+  protected isTaskFocused = signal(false);
 
-  get items(): TodoItem[] {
-    return this.todoService.filteredTodos();
-  }
+  protected task = () => this.todoForm.get('task');
 
-  get task() {
-    return this.todoForm.get('task');
-  }
+  protected items = computed(() => this.todoService.filteredTodos());
 
-  get totalCount(): number {
-    return this.todos().length;
-  }
+  protected groupedItems = computed(() => {
+    const items = this.items();
+    const grouped = items.reduce((acc, item) => {
+      if (!acc.has(item.date)) {
+        acc.set(item.date, []);
+      }
+      acc.get(item.date)!.push(item);
+      return acc;
+    }, new Map<string, typeof items>());
 
-  get activeCount(): number {
-    return this.todos().filter(todo => !todo.completed).length;
-  }
+    return Array.from(grouped, ([date, todos]) => ({date, todos}))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  });
 
-  get completedCount(): number {
-    return this.todos().filter(todo => todo.completed).length;
-  }
+  protected totalCount = computed(() => this.todos().length);
+  protected activeCount = computed(() => this.todos().filter(t => !t.completed).length);
+  protected completedCount = computed(() => this.todos().filter(t => t.completed).length);
 
-  setFilter(newFilter: FilterType):void {
+  protected setFilter(newFilter: filterState): void {
     this.todoService.setFilter(newFilter);
   }
 
-  onSubmit():void {
-    const taskControl = this.task;
-    if (!taskControl || !taskControl.value?.trim()) {
+  protected onSubmit(): void {
+    const taskValue = this.task()?.value?.trim();
+
+    if (!taskValue || this.todoForm.invalid) {
       return;
     }
 
-    if (this.todoForm.valid) {
-      this.addTask(taskControl.value);
-    }
+    const selectedDate = this.todoForm.get('dateControl')?.value;
+    const dateString = this.formatDateToISO(selectedDate || new Date());
+    this.todoService.addTask(taskValue, dateString);
+    this.todoForm.reset({
+      task: '',
+      dateControl: new Date()
+    });
   }
 
-  onTaskFocus(): void {
-    this.isTaskFocused = true;
+  protected onTaskFocus(): void {
+    this.isTaskFocused.set(true);
   }
 
-  onTaskBlur(): void {
-    this.isTaskFocused = false;
+  protected onTaskBlur(): void {
+    this.isTaskFocused.set(false);
   }
 
-  addTask(newTask: string) {
-    if (this.todoForm.invalid) {
-      return;
-    }
-    this.todoService.addTask(newTask);
-    this.todoForm.reset();
-  }
-
-  deleteTask(id: number) {
+  protected deleteTask(id: number): void {
     this.todoService.deleteTask(id);
   }
 
-  toggleCompletion(id: number) {
+  protected toggleCompletion(id: number): void {
     this.todoService.toggleCompletion(id);
   }
 
-  editTask(update: { id: number; description: string }) {
+  protected editTask(update: { id: number; description: string }): void {
     this.todoService.editTask(update.id, update.description);
   }
+
+  protected formatDate(dateString: string): string {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const tomorrowStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    if (date.getTime() === todayStart.getTime()) return 'Today';
+    if (date.getTime() === tomorrowStart.getTime()) return 'Tomorrow';
+
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+
+  private formatDateToISO(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
 }

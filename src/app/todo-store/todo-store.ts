@@ -1,5 +1,5 @@
 import {computed, effect, Injectable, signal} from '@angular/core';
-import {FilterType, TodoItem} from '../interfaces';
+import {filterState, TodoItem} from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -7,20 +7,20 @@ import {FilterType, TodoItem} from '../interfaces';
 export class TodoStore {
 
   private _todos = signal<TodoItem[]>([]);
-  private _filter = signal<FilterType>('all');
+  private _filter = signal<filterState>(filterState.all);
 
   todos = this._todos.asReadonly();
-  filter = this._filter.asReadonly();
+
 
   filteredTodos = computed(() => {
     const todos = this._todos();
     const filter = this._filter();
     switch (filter) {
-      case 'all':
+      case filterState.all:
         return todos;
-      case 'active':
+      case filterState.active:
         return todos.filter(todo => !todo.completed);
-      case 'completed':
+      case filterState.completed:
         return todos.filter(todo => todo.completed);
     }
   });
@@ -46,15 +46,16 @@ export class TodoStore {
     }
   }
 
-  setFilter(newFilter: FilterType): void {
+  setFilter(newFilter: filterState): void {
     this._filter.set(newFilter);
   }
 
-  addTask(task: string): void {
+  addTask(task: string, date: string): void {
       const newTodo: TodoItem = {
         id: Date.now(),
         description: task,
-        completed: false
+        completed: false,
+        date: date,
       }
       this._todos.update(curTodos => [...curTodos, newTodo]);
   }
