@@ -2,8 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
-  inject,
   input,
   output
 } from '@angular/core';
@@ -28,7 +26,6 @@ import {distinctUntilChanged} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Todos{
-  private destroyRef = inject(DestroyRef);
   readonly item = input.required<TodoItem>();
   readonly deleteTaskEvent = output<number>();
   readonly toggleCompletionEvent = output<number>();
@@ -42,14 +39,14 @@ export class Todos{
 
   constructor() {
     toObservable(this.completed)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed())
       .subscribe(completed => {
         this.checkbox.setValue(completed, {emitEvent: false});
       });
     this.checkbox.valueChanges
       .pipe(
         distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed()
       )
       .subscribe(() => {
         this.toggleCompletionEvent.emit(this.id());
