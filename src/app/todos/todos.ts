@@ -11,7 +11,6 @@ import {MatIcon} from '@angular/material/icon';
 import {OpenModal} from '../todo-modal-window/open-modal/open-modal';
 import {TodoCheckbox} from './todo-checkbox/todo-checkbox';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {distinctUntilChanged} from 'rxjs/operators';
 
 @Component({
   selector: 'app-todo',
@@ -45,7 +44,6 @@ export class Todos{
       });
     this.checkbox.valueChanges
       .pipe(
-        distinctUntilChanged(),
         takeUntilDestroyed()
       )
       .subscribe(() => {
