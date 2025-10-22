@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, forwardRef, input, signal} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {onChangeFn, onTouchFn} from '../../interfaces';
 
 @Component({
   selector: 'todo-checkbox',
@@ -41,6 +42,3 @@ export class TodoCheckbox implements ControlValueAccessor {
     this.onTouch = fn;
   }
 }
-
-type onChangeFn<T> = (value: T) => void;
-type onTouchFn = () => void;

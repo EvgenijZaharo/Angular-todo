@@ -9,3 +9,6 @@ export enum filterState {
   active = 'active',
   completed = 'completed'
 }
+
+export type onChangeFn<T> = (value: T) => void;
+export type onTouchFn = () => void;

@@ -1,0 +1,34 @@
+
+@mixin input-base(
+  $bg: var(--input-bg-color),
+  $text: var(--input-text-color),
+  $border: var(--input-border-color),
+  $padding: var(--input-padding),
+  $radius: var(--input-border-radius)
+) {
+  background-color: $bg;
+  color: $text;
+  padding: $padding;
+  border-radius: $radius;
+  border: var(--input-border-width) solid $border;
+  outline: none;
+  transition: var(--input-transition);
+}
+
+@mixin input-focus($border-color, $ring-color) {
+  border-color: $border-color;
+  box-shadow: 0 0 0 3px $ring-color;
+}
+
+@mixin input-error-state(
+  $border-color: var(--input-border-color-error),
+  $ring-color: var(--input-ring-color-error)
+) {
+  border-color: $border-color;
+
+  &:focus {
+    @include input-focus($border-color, $ring-color);
+  }
+}
+
+

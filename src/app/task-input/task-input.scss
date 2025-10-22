@@ -1,0 +1,54 @@
+/* Переменные для кастомизации - можно переопределить извне */
+:host {
+  --input-bg-color: rgb(51, 65, 85); /* slate-700 */
+  --input-text-color: rgb(226, 232, 240); /* slate-200 */
+  --input-placeholder-color: rgb(100, 116, 139); /* slate-500 */
+  --input-border-color: rgb(71, 85, 105); /* slate-600 */
+  --input-border-color-focus: rgb(59, 130, 246); /* blue-500 */
+  --input-border-color-error: rgb(239, 68, 68); /* red-500 */
+  --input-ring-color-focus: rgba(59, 130, 246, 0.2);
+  --input-ring-color-error: rgba(239, 68, 68, 0.3);
+  --input-border-width: 2px;
+  --input-border-radius: 0.5rem;
+  --input-padding: 0.5rem 1rem;
+  --input-transition: all 0.2s ease-in-out;
+  
+  display: block;
+}
+
+/* Миксин для состояния фокуса - можно переиспользовать */
+@mixin input-focus($border-color, $ring-color) {
+  border-color: $border-color;
+  box-shadow: 0 0 0 3px $ring-color;
+}
+
+/* Базовые стили инпута */
+:host input {
+  width: 100%;
+  background-color: var(--input-bg-color);
+  color: var(--input-text-color);
+  padding: var(--input-padding);
+  border-radius: var(--input-border-radius);
+  border: var(--input-border-width) solid var(--input-border-color);
+  outline: none;
+  transition: var(--input-transition);
+  
+  &::placeholder {
+    color: var(--input-placeholder-color);
+  }
+  
+  /* Фокус - обычное состояние */
+  &:focus {
+    @include input-focus(var(--input-border-color-focus), var(--input-ring-color-focus));
+  }
+}
+
+/* Состояние ошибки */
+:host.has-error input {
+  border-color: var(--input-border-color-error);
+  
+  &:focus {
+    @include input-focus(var(--input-border-color-error), var(--input-ring-color-error));
+  }
+}
+

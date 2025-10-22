@@ -5,16 +5,19 @@ import {TodoStore} from './todo-store/todo-store';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {VALIDATION_CONSTANTS} from './app.config';
 import {TodoDatepicker} from './todo-datepicker/todo-datepicker';
+import {TaskInput} from './task-input/task-input';
 
 @Component({
   selector: 'app-root',
-  imports: [Todos, ReactiveFormsModule, TodoDatepicker],
+  imports: [Todos, ReactiveFormsModule, TodoDatepicker, TaskInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  private readonly todoService = inject(TodoStore);
+export class App{
+
+
+  private readonly todoService: TodoStore = inject(TodoStore);
   private readonly validationsConstant = inject(VALIDATION_CONSTANTS);
 
   readonly todos = this.todoService.todos;
@@ -34,10 +37,13 @@ export class App {
     })
   });
 
-  protected isTaskFocused = signal(false);
+  protected task = this.todoForm.controls.task;
+  protected selectedDate = this.todoForm.controls.dateControl;
+  protected isFocused = signal<boolean>(false);
 
-  protected task = () => this.todoForm.get('task');
-
+  protected onInputFocused(isFocused: boolean):void {
+    this.isFocused.set(isFocused);
+  }
   protected items = computed(() => this.todoService.filteredTodos());
 
   protected groupedItems = computed(() => {
@@ -63,27 +69,19 @@ export class App {
   }
 
   protected onSubmit(): void {
-    const taskValue = this.task()?.value?.trim();
+    const taskValue = this.task?.value?.trim();
 
     if (!taskValue || this.todoForm.invalid) {
       return;
     }
 
-    const selectedDate = this.todoForm.get('dateControl')?.value;
+    const selectedDate = this.selectedDate?.value;
     const dateString = this.formatDateToISO(selectedDate || new Date());
     this.todoService.addTask(taskValue, dateString);
     this.todoForm.reset({
       task: '',
       dateControl: new Date()
     });
-  }
-
-  protected onTaskFocus(): void {
-    this.isTaskFocused.set(true);
-  }
-
-  protected onTaskBlur(): void {
-    this.isTaskFocused.set(false);
   }
 
   protected deleteTask(id: number): void {

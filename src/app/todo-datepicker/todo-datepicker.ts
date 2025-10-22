@@ -8,6 +8,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {onChangeFn, onTouchFn} from '../interfaces';
 
 @Component({
   selector: 'todo-datepicker',
@@ -29,10 +30,8 @@ export class TodoDatepicker implements ControlValueAccessor {
   selected = signal<Date>(new Date());
   readonly minDate = new Date();
 
-  private onChange: (value: Date) => void = () => {
-  };
-  private onTouched: () => void = () => {
-  };
+  private onChange: onChangeFn<Date> = () => {};
+  private onTouched: onTouchFn = () => {};
 
   writeValue(value: Date): void {
     if (value) {
@@ -40,11 +39,11 @@ export class TodoDatepicker implements ControlValueAccessor {
     }
   }
 
-  registerOnChange(fn: (value: Date) => void): void {
+  registerOnChange(fn: onChangeFn<Date>): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: () => void): void {
+  registerOnTouched(fn: onTouchFn): void {
     this.onTouched = fn;
   }
 
@@ -61,12 +60,9 @@ export class TodoDatepicker implements ControlValueAccessor {
 
   formatSelectedDate = (): string => {
     const selectedDate = this.selected();
-
-    const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const tomorrowStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-
-    if (selectedDate.getTime() === todayStart.getTime()) return 'Today';
+    const todayStart = this.minDate;
+    const tomorrowStart = new Date(todayStart.getFullYear(), todayStart.getMonth(), todayStart.getDate() + 1);
+    if (selectedDate.getDate() === todayStart.getDate()) return 'Today';
     if (selectedDate.getTime() === tomorrowStart.getTime()) return 'Tomorrow';
 
     return selectedDate.toLocaleDateString('en-US', {

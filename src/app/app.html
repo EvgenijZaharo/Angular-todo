@@ -30,27 +30,20 @@
       <form [formGroup]="todoForm" (ngSubmit)="onSubmit()" class="flex gap-3 mb-8">
         <label for="addItemValue" class="sr-only">Add a new task</label>
         <div class="flex-grow">
-          <input
-            id="addItemValue"
-            placeholder="Add a new task..."
+          <app-task-input
             formControlName="task"
-            class="w-full bg-slate-700 text-slate-200 placeholder:text-slate-500 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 transition-all"
-            (focus)="onTaskFocus()"
-            (blur)="onTaskBlur()"
-            [class.border-transparent]="!isTaskFocused() || !task()?.dirty"
-            [class.border-red-500]="isTaskFocused() && task()?.errors && task()?.dirty"
-            [class.focus:ring-blue-500]="!isTaskFocused() || !task()?.errors || !task()?.dirty"
-            [class.focus:ring-red-500]="isTaskFocused() && task()?.errors && task()?.dirty"
-          >
-          @if (isTaskFocused() && task()?.errors && task()?.dirty) {
+            (focusChange)="onInputFocused($event)"
+            [hasValidationError]="!!(task.errors && (task.touched || isFocused()))"
+          />
+          @if (task.errors && (task.touched && isFocused())){
             <div class="text-red-400 text-sm mt-1 pl-1">
-              @if (task()?.hasError('required')) {
+              @if (task.hasError('required')) {
                 <span>Task cannot be empty.</span>
               }
-              @if (task()?.hasError('minlength')) {
+              @if (task.hasError('minlength')) {
                 <span>Task must be at least 3 characters long.</span>
               }
-              @if (task()?.hasError('maxlength')) {
+              @if (task.hasError('maxlength')) {
                 <span>Task cannot exceed 255 characters.</span>
               }
             </div>
