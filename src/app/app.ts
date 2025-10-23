@@ -1,11 +1,21 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
-import {filterState} from './interfaces';
-import {Todos} from './todos/todos';
-import {TodoStore} from './todo-store/todo-store';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {VALIDATION_CONSTANTS} from './app.config';
-import {TodoDatepicker} from './todo-datepicker/todo-datepicker';
-import {TaskInput} from './task-input/task-input';
+import {Todos} from '@todos/todos';
+import {TodoDatepicker} from '@todo-datepicker/todo-datepicker';
+import {TaskInput} from '@task-input/task-input';
+import {filterState} from '../interfaces/interfaces';
+import {Store} from '@ngrx/store';
+import {TodoActions} from '../store/todos-action';
+import {
+  selectActiveCount,
+  selectAllTodos,
+  selectCompletedCount,
+  selectGroupedTodos,
+  selectTotalCount
+} from '../store/todos-selectors';
+
 
 @Component({
   selector: 'app-root',
@@ -14,14 +24,16 @@ import {TaskInput} from './task-input/task-input';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App{
+export class App implements OnInit {
+  store = inject(Store);
 
+  ngOnInit() {
+    this.store.dispatch(TodoActions.loadTodos());
+  }
 
-  private readonly todoService: TodoStore = inject(TodoStore);
   private readonly validationsConstant = inject(VALIDATION_CONSTANTS);
 
-  readonly todos = this.todoService.todos;
-  readonly filterState = filterState;
+  readonly todos = this.store.selectSignal(selectAllTodos);
 
   todoForm = new FormGroup({
     task: new FormControl<string>('', {
@@ -41,31 +53,18 @@ export class App{
   protected selectedDate = this.todoForm.controls.dateControl;
   protected isFocused = signal<boolean>(false);
 
-  protected onInputFocused(isFocused: boolean):void {
+  protected onInputFocused(isFocused: boolean): void {
     this.isFocused.set(isFocused);
   }
-  protected items = computed(() => this.todoService.filteredTodos());
 
-  protected groupedItems = computed(() => {
-    const items = this.items();
-    const grouped = items.reduce((acc, item) => {
-      if (!acc.has(item.date)) {
-        acc.set(item.date, []);
-      }
-      acc.get(item.date)!.push(item);
-      return acc;
-    }, new Map<string, typeof items>());
+  protected groupedItems = this.store.selectSignal(selectGroupedTodos);
 
-    return Array.from(grouped, ([date, todos]) => ({date, todos}))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  });
-
-  protected totalCount = computed(() => this.todos().length);
-  protected activeCount = computed(() => this.todos().filter(t => !t.completed).length);
-  protected completedCount = computed(() => this.todos().filter(t => t.completed).length);
+  protected totalCount = this.store.selectSignal(selectTotalCount);
+  protected activeCount = this.store.selectSignal(selectActiveCount);
+  protected completedCount = this.store.selectSignal(selectCompletedCount);
 
   protected setFilter(newFilter: filterState): void {
-    this.todoService.setFilter(newFilter);
+    this.store.dispatch(TodoActions.setFilter({filter: newFilter}));
   }
 
   protected onSubmit(): void {
@@ -77,7 +76,7 @@ export class App{
 
     const selectedDate = this.selectedDate?.value;
     const dateString = this.formatDateToISO(selectedDate || new Date());
-    this.todoService.addTask(taskValue, dateString);
+    this.store.dispatch(TodoActions.addTodo({task: taskValue, date: dateString}));
     this.todoForm.reset({
       task: '',
       dateControl: new Date()
@@ -85,15 +84,15 @@ export class App{
   }
 
   protected deleteTask(id: number): void {
-    this.todoService.deleteTask(id);
+    this.store.dispatch(TodoActions.deleteTodo({id}))
   }
 
   protected toggleCompletion(id: number): void {
-    this.todoService.toggleCompletion(id);
+    this.store.dispatch(TodoActions.toggleTodo({id}))
   }
 
-  protected editTask(update: { id: number; description: string }): void {
-    this.todoService.editTask(update.id, update.description);
+  protected editTask(update: { id: number; task: string }): void {
+    this.store.dispatch(TodoActions.editTodo(update));
   }
 
   protected formatDate(dateString: string): string {
@@ -115,7 +114,6 @@ export class App{
     });
   }
 
-
   private formatDateToISO(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -123,4 +121,5 @@ export class App{
     return `${year}-${month}-${day}`;
   }
 
+  protected readonly filterState = filterState;
 }

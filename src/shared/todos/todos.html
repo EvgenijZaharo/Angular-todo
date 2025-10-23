@@ -7,11 +7,11 @@
       class="ml-4 flex-1 transition-colors truncate"
       [class.completed]="completed()"
     >
-      {{description()}}
+      {{task()}}
     </p>
   </li>
   <div class="flex">
-    <open-modal [id]="id()" [description]="description()" (save)="editTaskEvent.emit($event)" />
+    <open-modal [id]="id()" [task]="task()" (save)="editTaskEvent.emit($event)" />
     <button
       type="button"
       (click)="deleteTask(id())"

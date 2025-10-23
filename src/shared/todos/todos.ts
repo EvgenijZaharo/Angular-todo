@@ -6,20 +6,20 @@ import {
   output
 } from '@angular/core';
 import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
-import {TodoItem} from '../interfaces';
-import {MatIcon} from '@angular/material/icon';
-import {OpenModal} from '../todo-modal-window/open-modal/open-modal';
+import {TodoItem} from '../../interfaces/interfaces';
+import {OpenModal} from '@todo-modal/open-modal/open-modal';
 import {TodoCheckbox} from './todo-checkbox/todo-checkbox';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todos.html',
   imports: [
-    MatIcon,
     OpenModal,
     TodoCheckbox,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatIcon
   ],
   styleUrls: ['./todos.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,11 +28,11 @@ export class Todos{
   readonly item = input.required<TodoItem>();
   readonly deleteTaskEvent = output<number>();
   readonly toggleCompletionEvent = output<number>();
-  readonly editTaskEvent = output<{ id: number, description: string }>();
+  readonly editTaskEvent = output<{ id: number, task: string }>();
 
   checkbox = new FormControl<boolean>(false, {nonNullable: true});
 
-  description = computed(() => this.item().description);
+  task = computed(() => this.item().task);
   completed = computed(() => this.item().completed);
   id = computed(() => this.item().id);
 

@@ -9,7 +9,7 @@ import {
 import {OpenModal} from './open-modal/open-modal';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {VALIDATION_CONSTANTS} from '../app.config';
+import {VALIDATION_CONSTANTS} from '../../app/app.config';
 
 @Component({
   selector: 'todo-modal',

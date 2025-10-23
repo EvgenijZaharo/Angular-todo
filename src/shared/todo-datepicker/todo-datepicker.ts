@@ -8,7 +8,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {onChangeFn, onTouchFn} from '../interfaces';
+import {onChangeFn, onTouchFn} from '../../interfaces/interfaces';
 
 @Component({
   selector: 'todo-datepicker',

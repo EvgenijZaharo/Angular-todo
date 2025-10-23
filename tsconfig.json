@@ -5,6 +5,14 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitOverride": true,
+    "baseUrl": "./",
+    "paths": {
+      "@todos/*": ["src/shared/todos/*"],
+      "@task-input/*": ["src/shared/task-input/*"],
+      "@todo-datepicker/*": ["src/shared/todo-datepicker/*"],
+      "@todo-modal/*": ["src/shared/todo-modal-window/*"],
+      "@interfaces/*": ["src/shared/interfaces/*"],
+    },
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -29,6 +37,6 @@
     },
     {
       "path": "./tsconfig.spec.json"
-    }
+    },
   ]
 }
