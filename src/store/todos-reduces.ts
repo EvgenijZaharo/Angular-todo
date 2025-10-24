@@ -1,4 +1,4 @@
-import {filterState, TodoState} from '../interfaces/interfaces';
+import {filterState, TodoState} from '@interfaces/interfaces';
 import {createReducer, on} from '@ngrx/store';
 import {TodoActions} from './todos-action';
 
@@ -39,7 +39,7 @@ export const todoReducer = createReducer(
   })),
   on(TodoActions.setFilter, (state, {filter}) => ({
     ...state,
-    filter: state.filter = filter
+    filter: filter
   })),
   on(TodoActions.loadTodos, (state) =>({
     ...state,

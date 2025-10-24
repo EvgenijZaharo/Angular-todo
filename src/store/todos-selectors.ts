@@ -1,5 +1,5 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {filterState, TodoState} from '../interfaces/interfaces';
+import {filterState, TodoState} from '@interfaces/interfaces';
 
 export const selectTodoState = createFeatureSelector<TodoState>('todos');
 

@@ -2,7 +2,7 @@ import {inject} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {TodoActions} from './todos-action';
 import {map, tap} from 'rxjs';
-import {TodoItem} from '../interfaces/interfaces';
+import {TodoItem} from '@interfaces/interfaces';
 import {Store} from '@ngrx/store';
 import {selectAllTodos} from './todos-selectors';
 import {concatLatestFrom} from '@ngrx/operators';

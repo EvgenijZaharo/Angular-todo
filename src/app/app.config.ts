@@ -4,8 +4,8 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 
 import { routes } from './app.routes';
-import { todoReducer } from '../store/todos-reduces';
-import {TodosEffects} from '../store/todos-effects';
+import { todoReducer } from '@store/todos-reduces';
+import {TodosEffects} from '@store/todos-effects';
 
 export interface ValidationConstants {
   minLength: number;

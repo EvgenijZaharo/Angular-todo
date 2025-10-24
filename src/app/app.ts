@@ -1,20 +1,19 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
-
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {VALIDATION_CONSTANTS} from './app.config';
 import {Todos} from '@todos/todos';
 import {TodoDatepicker} from '@todo-datepicker/todo-datepicker';
 import {TaskInput} from '@task-input/task-input';
-import {filterState} from '../interfaces/interfaces';
+import {filterState} from '@interfaces/interfaces';
 import {Store} from '@ngrx/store';
-import {TodoActions} from '../store/todos-action';
+import {TodoActions} from '@store/todos-action';
 import {
   selectActiveCount,
   selectAllTodos,
   selectCompletedCount,
   selectGroupedTodos,
   selectTotalCount
-} from '../store/todos-selectors';
+} from '@store/todos-selectors';
 
 
 @Component({
@@ -121,5 +120,5 @@ export class App implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  protected readonly filterState = filterState;
+  protected filterState = filterState;
 }

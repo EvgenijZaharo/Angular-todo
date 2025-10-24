@@ -1,6 +1,6 @@
 import {Component, forwardRef, output, input, OnInit, DestroyRef, inject} from '@angular/core';
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
-import {onChangeFn, onTouchFn} from '../../interfaces/interfaces';
+import {onChangeFn, onTouchFn} from '@interfaces/interfaces';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({

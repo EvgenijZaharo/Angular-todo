@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {filterState, TodoItem} from '../interfaces/interfaces';
+import {filterState, TodoItem} from '@interfaces/interfaces';
 
 export const TodoActions = createActionGroup({
   source: 'Todo',
